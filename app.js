@@ -84,8 +84,8 @@ app.post('/api/message', function(req, res) {
     if (data.context.discovery){
     	delete data.context.discovery;
     	discovery.query({
-    		collection_id: "210ee7c0-8b57-46ec-aa11-7db62fdc71ec",
-    		environment_id:"28543497-eb8c-4a64-9f43-502eab69d305",
+    		collection_id: process.env.collection_id,
+    		environment_id: process.env.environment_id,
     		query: data.input.text,
     		count: 5
     	},
@@ -149,16 +149,15 @@ app.post('/api/message', function(req, res) {
             data.output.text.push("Lo siento, no encontré nada para ayudarte con ese problema.");
           }
         }
-
-    	});
-    	return res.json(data);
+	return res.json(data);
+    	});	
     }
-
+    else{
 	console.log(data.output.text);
-	data.output.text = JSON.parse(Output.replaceTags(JSON.stringify(
-  data.output.text)));
+	data.output.text = JSON.parse(Output.replaceTags(JSON.stringify(data.output.text)));
 	console.log(data.output.text);
 	return res.json(Cloudant.updateMessage(payload, data));
+    }
   });
 });
 Cloudant.saveLastMessage();
